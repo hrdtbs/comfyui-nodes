@@ -1,0 +1,88 @@
+name: Test and Coverage
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install dependencies
+        run: |
+          pip install coverage
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Run tests
+        run: |
+          coverage run --source=SimpleMath,SimpleWireless -m unittest discover tests
+          coverage report -m
+          coverage json
+
+      - name: Comment Coverage
+        if: success()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+
+            try {
+              const coverage = JSON.parse(fs.readFileSync('coverage.json', 'utf8'));
+              const files = coverage.files;
+              let body = '## Coverage Report\n\n| File | Coverage | Status |\n|---|---|---|\n';
+
+              for (const [filename, data] of Object.entries(files)) {
+                const percent = data.summary.percent_covered;
+                let status = '🟢';
+                if (percent < 80) status = '🟡';
+                if (percent < 50) status = '🔴';
+                body += `| ${filename} | ${percent.toFixed(2)}% | ${status} |\n`;
+              }
+
+              const totalPercent = coverage.totals.percent_covered;
+              let totalStatus = '🟢';
+              if (totalPercent < 80) totalStatus = '🟡';
+              if (totalPercent < 50) totalStatus = '🔴';
+
+              body += `\n**Total Coverage:** ${totalPercent.toFixed(2)}% ${totalStatus}`;
+
+              // Get existing comments
+              const { data: comments } = await github.rest.issues.listComments({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+              });
+
+              const botComment = comments.find(c => c.user.type === 'Bot' && c.body.includes('## Coverage Report'));
+
+              if (botComment) {
+                await github.rest.issues.updateComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  comment_id: botComment.id,
+                  body: body
+                });
+              } else {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.issue.number,
+                  body: body
+                });
+              }
+            } catch (err) {
+              console.log("Error processing coverage or posting comment:", err);
+              // Fail the step if something goes wrong to alert the user
+              core.setFailed(err.message);
+            }
