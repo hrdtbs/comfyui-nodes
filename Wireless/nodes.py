@@ -3,7 +3,7 @@ from .utils import AnyType
 # Global storage for wireless data
 WIRELESS_DATA = {}
 
-class SimpleWirelessSend:
+class WirelessSend:
     def __init__(self):
         pass
 
@@ -19,14 +19,14 @@ class SimpleWirelessSend:
     RETURN_TYPES = (AnyType("*"),)
     RETURN_NAMES = ("data",)
     FUNCTION = "send"
-    CATEGORY = "SimpleWireless"
+    CATEGORY = "h2nodes/Wireless"
 
     def send(self, data, key):
         global WIRELESS_DATA
         WIRELESS_DATA[key] = data
         return (data,)
 
-class SimpleWirelessReceive:
+class WirelessReceive:
     def __init__(self):
         pass
 
@@ -44,12 +44,12 @@ class SimpleWirelessReceive:
     RETURN_TYPES = (AnyType("*"),)
     RETURN_NAMES = ("data",)
     FUNCTION = "receive"
-    CATEGORY = "SimpleWireless"
+    CATEGORY = "h2nodes/Wireless"
 
     def receive(self, key, trigger=None):
         global WIRELESS_DATA
         if key in WIRELESS_DATA:
             return (WIRELESS_DATA[key],)
         else:
-            print(f"SimpleWireless: Key '{key}' not found in storage.")
+            print(f"Wireless: Key '{key}' not found in storage.")
             return (None,)

@@ -1,4 +1,4 @@
-class SimpleMathAdd:
+class MathAdd:
     def __init__(self):
         pass
 
@@ -18,7 +18,7 @@ class SimpleMathAdd:
 
     # OUTPUT_NODE = False
 
-    CATEGORY = "SimpleMath"
+    CATEGORY = "h2nodes/Math"
 
     def add(self, a, b):
         return (a + b,)

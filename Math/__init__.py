@@ -1,11 +1,11 @@
-from .simple_math import SimpleMathAdd
+from .nodes import MathAdd
 
 NODE_CLASS_MAPPINGS = {
-    "SimpleMathAdd": SimpleMathAdd
+    "MathAdd": MathAdd
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "SimpleMathAdd": "Simple Math Add"
+    "MathAdd": "Math Add"
 }
 
 __all__ = ['NODE_CLASS_MAPPINGS', 'NODE_DISPLAY_NAME_MAPPINGS']
