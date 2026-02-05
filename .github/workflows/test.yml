@@ -26,7 +26,7 @@ jobs:
 
       - name: Run tests
         run: |
-          coverage run --source=SimpleMath,SimpleWireless -m unittest discover tests
+          coverage run --source=Math,Wireless -m unittest discover tests
           coverage report -m
           coverage json
 

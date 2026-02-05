@@ -5,17 +5,17 @@ import unittest
 # Add repo root to path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from SimpleWireless.wireless import SimpleWirelessSend, SimpleWirelessReceive, WIRELESS_DATA
-from SimpleWireless.utils import AnyType
+from Wireless.nodes import WirelessSend, WirelessReceive, WIRELESS_DATA
+from Wireless.utils import AnyType
 
-class TestSimpleWireless(unittest.TestCase):
+class TestWireless(unittest.TestCase):
     def setUp(self):
         # Clear data before each test
         WIRELESS_DATA.clear()
 
     def test_send_receive(self):
-        sender = SimpleWirelessSend()
-        receiver = SimpleWirelessReceive()
+        sender = WirelessSend()
+        receiver = WirelessReceive()
 
         test_data = "Hello World"
         key = "msg"
@@ -31,7 +31,7 @@ class TestSimpleWireless(unittest.TestCase):
         self.assertEqual(result_receive[0], test_data)
 
     def test_receive_missing(self):
-        receiver = SimpleWirelessReceive()
+        receiver = WirelessReceive()
         result = receiver.receive("non_existent")
         self.assertIsNone(result[0])
 
@@ -45,13 +45,13 @@ class TestSimpleWireless(unittest.TestCase):
 
     def test_input_types(self):
         # Send
-        input_types_send = SimpleWirelessSend.INPUT_TYPES()
+        input_types_send = WirelessSend.INPUT_TYPES()
         self.assertIn("required", input_types_send)
         self.assertIn("data", input_types_send["required"])
         self.assertIn("key", input_types_send["required"])
 
         # Receive
-        input_types_recv = SimpleWirelessReceive.INPUT_TYPES()
+        input_types_recv = WirelessReceive.INPUT_TYPES()
         self.assertIn("required", input_types_recv)
         self.assertIn("key", input_types_recv["required"])
         self.assertIn("optional", input_types_recv)

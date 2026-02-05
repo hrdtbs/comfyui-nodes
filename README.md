@@ -2,17 +2,17 @@
 
 このリポジトリは、[ComfyUI](https://github.com/comfyanonymous/ComfyUI) 用のカスタムノードを配置するための自分用リポジトリです。カスタムノードの作成方法を理解するための参考実装とドキュメントを含んでいます。
 
-## 参考実装: SimpleMath
+## Math: 基本的な計算ノード
 
-`SimpleMath` ディレクトリに単純なカスタムノードの参考実装を用意しました。このノードは基本的な整数の加算を行います。
+`Math` ディレクトリに単純なカスタムノードの参考実装を用意しました。基本的な整数の加算を行います。
 
 ### 構造
 
 実装は標準的なComfyUIカスタムノードの構造に従っています：
 
-- `SimpleMath/simple_math.py`: ノードクラスの定義 (`SimpleMathAdd`) を含みます。
+- `Math/nodes.py`: ノードクラスの定義 (`MathAdd`) を含みます。
   - `INPUT_TYPES`, `RETURN_TYPES`, `FUNCTION`, `CATEGORY` を定義しています。
-- `SimpleMath/__init__.py`: ノードを登録します。
+- `Math/__init__.py`: ノードを登録します。
   - `NODE_CLASS_MAPPINGS` と `NODE_DISPLAY_NAME_MAPPINGS` をエクスポートしています。
 
 ### 使い方
@@ -25,16 +25,18 @@
    git clone <このリポジトリのURL>
    ```
 2. ComfyUIを再起動します。
-3. カテゴリ `SimpleMath` -> `Simple Math Add` の下にノードが表示されます。
+3. カテゴリ `h2nodes` -> `Math` -> `Math Add` の下にノードが表示されます。
 
-## 実装: SimpleWireless
+## Wireless: ワイヤレスデータ転送
 
-`SimpleWireless` ディレクトリに、ノード間でワイヤレスにデータを転送するためのノード実装を追加しました。"Anything Everywhere" に相当する機能を提供しますが、JavaScriptによる自動接続ではなく、明示的な送信(Send)と受信(Receive)のノードペアを使用します。
+`Wireless` ディレクトリに、ノード間でワイヤレスにデータを転送するためのノード実装を追加しました。"Anything Everywhere" に相当する機能を提供しますが、JavaScriptによる自動接続ではなく、明示的な送信(Send)と受信(Receive)のノードペアを使用します。
 
 ### ノード
 
 - **Wireless Send**: 任意のデータを受け取り、指定したキーでグローバルに保存します。
+  - カテゴリ: `h2nodes` -> `Wireless`
 - **Wireless Receive**: 指定したキーに対応するデータを取得して出力します。
+  - カテゴリ: `h2nodes` -> `Wireless`
 
 ### 使い方
 
