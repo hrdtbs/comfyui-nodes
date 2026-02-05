@@ -41,6 +41,21 @@ class TestSimpleWireless(unittest.TestCase):
         self.assertTrue(any_t == "STRING")
         self.assertTrue(any_t == 123)
         self.assertFalse(any_t != "IMAGE")
+        self.assertEqual(str(any_t), "*")
+
+    def test_input_types(self):
+        # Send
+        input_types_send = SimpleWirelessSend.INPUT_TYPES()
+        self.assertIn("required", input_types_send)
+        self.assertIn("data", input_types_send["required"])
+        self.assertIn("key", input_types_send["required"])
+
+        # Receive
+        input_types_recv = SimpleWirelessReceive.INPUT_TYPES()
+        self.assertIn("required", input_types_recv)
+        self.assertIn("key", input_types_recv["required"])
+        self.assertIn("optional", input_types_recv)
+        self.assertIn("trigger", input_types_recv["optional"])
 
 if __name__ == '__main__':
     unittest.main()
