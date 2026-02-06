@@ -26,7 +26,10 @@ jobs:
 
       - name: Run tests
         run: |
-          coverage run --source=Math,Wireless -m unittest discover tests
+          # Dynamically find all modules with __init__.py, excluding the root and tests directory
+          SOURCES=$(find . -maxdepth 2 -not -path '*/.*' -name "__init__.py" -print0 | xargs -0 -n1 dirname | sort | uniq | grep -v "^.$" | grep -v "^./tests" | cut -c 3- | tr '\n' ',' | sed 's/,$//')
+          echo "Coverage sources: $SOURCES"
+          coverage run --source=$SOURCES -m unittest discover tests
           coverage report -m
           coverage json
 
