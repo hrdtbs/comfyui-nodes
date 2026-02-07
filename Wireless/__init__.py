@@ -1,13 +1,13 @@
-from .nodes import WirelessSend, WirelessReceive
+from .nodes import Wireless
 
 NODE_CLASS_MAPPINGS = {
-    "WirelessSend": WirelessSend,
-    "WirelessReceive": WirelessReceive
+    "Wireless": Wireless,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "WirelessSend": "Wireless Send",
-    "WirelessReceive": "Wireless Receive"
+    "Wireless": "Wireless",
 }
 
-__all__ = ['NODE_CLASS_MAPPINGS', 'NODE_DISPLAY_NAME_MAPPINGS']
+WEB_DIRECTORY = "./js"
+
+__all__ = ['NODE_CLASS_MAPPINGS', 'NODE_DISPLAY_NAME_MAPPINGS', 'WEB_DIRECTORY']
