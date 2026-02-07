@@ -13,16 +13,20 @@ sys.modules["mediapipe"] = mock_mp
 # Need to reload or import after mocking
 # But since this script runs once, imports happen now.
 try:
+    import torch
+    import numpy as np
     from AnatomyGuard.nodes import AnatomyDetectionMesh, AnatomyLogicEvaluator, IterativeAnatomyRefiner, AnatomyGuardUtils
+    IMPORTS_SUCCESS = True
 except ImportError:
     # In case import fails for other reasons
+    IMPORTS_SUCCESS = False
     pass
 
-import torch
-import numpy as np
 
 class TestAnatomyGuard(unittest.TestCase):
     def setUp(self):
+        if not IMPORTS_SUCCESS:
+            self.skipTest("Required dependencies (torch, AnatomyGuard) not found")
         # Reset mock configuration if needed
         pass
 
