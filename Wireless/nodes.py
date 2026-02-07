@@ -1,9 +1,18 @@
-from .utils import AnyType
 
-# Global storage for wireless data
-WIRELESS_DATA = {}
+class AnyType(str):
+    """A special type that compares equal to any other type.
+    This is used to accept any input in ComfyUI nodes.
+    """
+    def __ne__(self, __value: object) -> bool:
+        return False
 
-class WirelessSend:
+    def __eq__(self, __value: object) -> bool:
+        return True
+
+    def __str__(self):
+        return self
+
+class Wireless:
     def __init__(self):
         pass
 
@@ -12,44 +21,13 @@ class WirelessSend:
         return {
             "required": {
                 "data": (AnyType("*"),),
-                "key": ("STRING", {"default": "my_data"}),
             },
         }
 
-    RETURN_TYPES = (AnyType("*"),)
-    RETURN_NAMES = ("data",)
-    FUNCTION = "send"
+    RETURN_TYPES = ()
+    FUNCTION = "func"
     CATEGORY = "h2nodes/Wireless"
+    OUTPUT_NODE = True
 
-    def send(self, data, key):
-        global WIRELESS_DATA
-        WIRELESS_DATA[key] = data
-        return (data,)
-
-class WirelessReceive:
-    def __init__(self):
-        pass
-
-    @classmethod
-    def INPUT_TYPES(s):
-        return {
-            "required": {
-                "key": ("STRING", {"default": "my_data"}),
-            },
-            "optional": {
-                "trigger": (AnyType("*"),), # Used to force execution order if needed
-            }
-        }
-
-    RETURN_TYPES = (AnyType("*"),)
-    RETURN_NAMES = ("data",)
-    FUNCTION = "receive"
-    CATEGORY = "h2nodes/Wireless"
-
-    def receive(self, key, trigger=None):
-        global WIRELESS_DATA
-        if key in WIRELESS_DATA:
-            return (WIRELESS_DATA[key],)
-        else:
-            print(f"Wireless: Key '{key}' not found in storage.")
-            return (None,)
+    def func(self, **kwargs):
+        return ()
