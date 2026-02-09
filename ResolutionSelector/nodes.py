@@ -1,8 +1,11 @@
 import re
 
 class ResolutionSelector:
+    """
+    A node that selects a resolution from a list of presets and returns the width and height.
+    """
     @classmethod
-    def INPUT_TYPES(s):
+    def INPUT_TYPES(s) -> dict:
         return {
             "required": {
                 "resolution": (
@@ -30,7 +33,16 @@ class ResolutionSelector:
     FUNCTION = "select_resolution"
     CATEGORY = "h2nodes/Image"
 
-    def select_resolution(self, resolution):
+    def select_resolution(self, resolution: str) -> tuple[int, int]:
+        """
+        Parses the selected resolution string and returns width and height.
+
+        Args:
+            resolution (str): The selected resolution string (e.g., "SDXL - 1024x1024 (1:1)").
+
+        Returns:
+            tuple[int, int]: A tuple containing (width, height). Returns (0, 0) if parsing fails.
+        """
         try:
             match = re.search(r'(\d+)x(\d+)', resolution)
             if match:

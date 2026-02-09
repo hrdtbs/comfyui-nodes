@@ -14,7 +14,10 @@ except ImportError:
 
 class AnatomyGuardUtils:
     @staticmethod
-    def tensor_to_cv2(image):
+    def tensor_to_cv2(image: torch.Tensor) -> np.ndarray:
+        """
+        Converts a ComfyUI image tensor (RGB) to an OpenCV image (BGR).
+        """
         # image: [B, H, W, C] or [H, W, C]
         if len(image.shape) == 4:
             image = image[0]
@@ -33,7 +36,10 @@ class AnatomyGuardUtils:
         return image_bgr
 
     @staticmethod
-    def cv2_to_tensor(image_bgr):
+    def cv2_to_tensor(image_bgr: np.ndarray) -> torch.Tensor:
+        """
+        Converts an OpenCV image (BGR) to a ComfyUI image tensor (RGB).
+        """
         # image_bgr: [H, W, C] uint8
         image_rgb = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2RGB)
         image_np = image_rgb.astype(np.float32) / 255.0
@@ -41,8 +47,11 @@ class AnatomyGuardUtils:
         return torch.from_numpy(image_np).unsqueeze(0)
 
 class AnatomyDetectionMesh:
+    """
+    Node that detects hands using MediaPipe.
+    """
     @classmethod
-    def INPUT_TYPES(s):
+    def INPUT_TYPES(s) -> dict:
         return {
             "required": {
                 "image": ("IMAGE",),
@@ -54,7 +63,16 @@ class AnatomyDetectionMesh:
     FUNCTION = "detect"
     CATEGORY = "h2nodes/AnatomyGuard"
 
-    def detect(self, image):
+    def detect(self, image: torch.Tensor) -> tuple[list]:
+        """
+        Runs MediaPipe Hands on the input image.
+
+        Args:
+            image (torch.Tensor): The input image.
+
+        Returns:
+            tuple[list]: A tuple containing a list of hand data dictionaries.
+        """
         mp_hands = mp.solutions.hands
 
         # Convert to BGR first (as per Utils) then RGB for MediaPipe
@@ -105,8 +123,11 @@ class AnatomyDetectionMesh:
             return (hands_data,)
 
 class AnatomyLogicEvaluator:
+    """
+    Node that evaluates the detected hand data against anatomical constraints.
+    """
     @classmethod
-    def INPUT_TYPES(s):
+    def INPUT_TYPES(s) -> dict:
         return {
             "required": {
                 "hand_data": ("HAND_DATA",),
@@ -119,7 +140,17 @@ class AnatomyLogicEvaluator:
     FUNCTION = "evaluate"
     CATEGORY = "h2nodes/AnatomyGuard"
 
-    def evaluate(self, hand_data, threshold):
+    def evaluate(self, hand_data: list, threshold: float) -> tuple[bool, torch.Tensor]:
+        """
+        Evaluates hand geometry validity.
+
+        Args:
+            hand_data (list): The list of detected hands.
+            threshold (float): Sensitivity threshold for checks.
+
+        Returns:
+            tuple[bool, torch.Tensor]: A tuple of (is_valid, error_mask).
+        """
         # Default: All good (True)
         is_valid = True
 
@@ -202,8 +233,11 @@ class AnatomyLogicEvaluator:
         return (is_valid, mask_tensor)
 
 class IterativeAnatomyRefiner:
+    """
+    Node that attempts to fix invalid anatomy using inpainting.
+    """
     @classmethod
-    def INPUT_TYPES(s):
+    def INPUT_TYPES(s) -> dict:
         return {
             "required": {
                 "image": ("IMAGE",),
@@ -227,7 +261,10 @@ class IterativeAnatomyRefiner:
     FUNCTION = "refine"
     CATEGORY = "h2nodes/AnatomyGuard"
 
-    def refine(self, image, mask, model, seed, steps, cfg, denoise, vae=None, positive=None, negative=None, controlnet_stack=None):
+    def refine(self, image: torch.Tensor, mask: torch.Tensor, model, seed: int, steps: int, cfg: float, denoise: float, vae=None, positive=None, negative=None, controlnet_stack=None) -> tuple[torch.Tensor]:
+        """
+        Refines the image area defined by the mask.
+        """
         # 1. Dilation
         mask_np = mask.cpu().numpy()
         if len(mask_np.shape) == 3:
