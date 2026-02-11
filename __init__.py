@@ -8,6 +8,8 @@ from .AnatomyGuard import NODE_CLASS_MAPPINGS as AnatomyGuard_MAPPINGS
 from .AnatomyGuard import NODE_DISPLAY_NAME_MAPPINGS as AnatomyGuard_DISPLAY_MAPPINGS
 from .StringTools import NODE_CLASS_MAPPINGS as StringTools_MAPPINGS
 from .StringTools import NODE_DISPLAY_NAME_MAPPINGS as StringTools_DISPLAY_MAPPINGS
+from .Logic import NODE_CLASS_MAPPINGS as Logic_MAPPINGS
+from .Logic import NODE_DISPLAY_NAME_MAPPINGS as Logic_DISPLAY_MAPPINGS
 
 NODE_CLASS_MAPPINGS = {
     **Math_MAPPINGS,
@@ -15,6 +17,7 @@ NODE_CLASS_MAPPINGS = {
     **ResolutionSelector_MAPPINGS,
     **AnatomyGuard_MAPPINGS,
     **StringTools_MAPPINGS,
+    **Logic_MAPPINGS,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
@@ -23,6 +26,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     **ResolutionSelector_DISPLAY_MAPPINGS,
     **AnatomyGuard_DISPLAY_MAPPINGS,
     **StringTools_DISPLAY_MAPPINGS,
+    **Logic_DISPLAY_MAPPINGS,
 }
 
 __all__ = ['NODE_CLASS_MAPPINGS', 'NODE_DISPLAY_NAME_MAPPINGS']
