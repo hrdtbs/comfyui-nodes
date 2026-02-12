@@ -1,16 +1,7 @@
-class AnyType(str):
-    """
-    A special type that compares equal to any other type.
-    This is used to accept any input in ComfyUI nodes.
-    """
-    def __ne__(self, __value: object) -> bool:
-        return False
-
-    def __eq__(self, __value: object) -> bool:
-        return True
-
-    def __str__(self) -> str:
-        return self
+try:
+    from ..utils import AnyType
+except ImportError:
+    from utils import AnyType
 
 
 class LogicBoolean:
@@ -126,3 +117,26 @@ class LogicCompare:
         except Exception:
             return (False,)
         return (False,)
+
+
+class LogicSwitch:
+    """
+    A node that switches between two inputs based on a boolean condition.
+    """
+    @classmethod
+    def INPUT_TYPES(s) -> dict:
+        return {
+            "required": {
+                "condition": ("BOOLEAN", {"default": True}),
+                "if_true": (AnyType("*"),),
+                "if_false": (AnyType("*"),),
+            },
+        }
+
+    RETURN_TYPES = (AnyType("*"),)
+    RETURN_NAMES = ("output",)
+    FUNCTION = "switch"
+    CATEGORY = "h2nodes/Logic"
+
+    def switch(self, condition: bool, if_true, if_false) -> tuple:
+        return (if_true if condition else if_false,)
