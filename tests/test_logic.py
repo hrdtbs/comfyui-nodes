@@ -5,7 +5,7 @@ import unittest
 # Add repo root to path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from Logic.nodes import LogicBoolean, LogicNot, LogicOperation, LogicCompare
+from Logic.nodes import LogicBoolean, LogicNot, LogicOperation, LogicCompare, LogicSwitch
 
 class TestLogic(unittest.TestCase):
     def test_logic_boolean(self):
@@ -61,6 +61,20 @@ class TestLogic(unittest.TestCase):
 
         # Equality between types usually works in Python (returns False)
         self.assertEqual(node.compare("==", "5", 5)[0], False)
+
+    def test_logic_switch(self):
+        node = LogicSwitch()
+        # Boolean switch
+        self.assertEqual(node.switch(True, "A", "B")[0], "A")
+        self.assertEqual(node.switch(False, "A", "B")[0], "B")
+
+        # Mixed types
+        self.assertEqual(node.switch(True, 100, "String")[0], 100)
+        self.assertEqual(node.switch(False, 100, "String")[0], "String")
+
+        # None handling (if needed, though standard inputs aren't usually None in ComfyUI without custom nodes)
+        self.assertEqual(node.switch(True, None, 1)[0], None)
+
 
 if __name__ == '__main__':
     unittest.main()
