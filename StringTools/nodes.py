@@ -1,3 +1,5 @@
+import re
+
 class StringConcat:
     """
     Concatenates two strings with a separator.
@@ -68,3 +70,55 @@ class StringSlice:
         # If end is 0, slice to the end.
         slice_end = None if end == 0 else end
         return (text[start:slice_end],)
+
+
+class StringRegexReplace:
+    """
+    Replaces occurrences of a regex pattern in a string.
+    """
+    @classmethod
+    def INPUT_TYPES(s) -> dict:
+        return {
+            "required": {
+                "text": ("STRING", {"multiline": True, "default": ""}),
+                "pattern": ("STRING", {"default": "", "multiline": False}),
+                "replacement": ("STRING", {"default": "", "multiline": False}),
+            }
+        }
+
+    RETURN_TYPES = ("STRING",)
+    RETURN_NAMES = ("result",)
+    FUNCTION = "regex_replace"
+    CATEGORY = "h2nodes/StringTools"
+
+    def regex_replace(self, text: str, pattern: str, replacement: str) -> tuple[str]:
+        try:
+            return (re.sub(pattern, replacement, text),)
+        except re.error as e:
+            print(f"[StringRegexReplace] Invalid regex pattern '{pattern}': {e}")
+            return (text,)
+
+
+class StringSplit:
+    """
+    Splits a string by a separator. Returns a list of strings.
+    If separator is empty, splits by whitespace.
+    """
+    @classmethod
+    def INPUT_TYPES(s) -> dict:
+        return {
+            "required": {
+                "text": ("STRING", {"multiline": True, "default": ""}),
+                "separator": ("STRING", {"default": ","}),
+            }
+        }
+
+    RETURN_TYPES = ("STRING",)
+    RETURN_NAMES = ("strings",)
+    FUNCTION = "split_string"
+    CATEGORY = "h2nodes/StringTools"
+
+    def split_string(self, text: str, separator: str) -> tuple[list[str]]:
+        if not separator:
+            return (text.split(),)
+        return (text.split(separator),)
