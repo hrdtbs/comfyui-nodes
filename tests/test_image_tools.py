@@ -6,9 +6,12 @@ import os
 # Add repo root to path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-# Mock torch before importing ImageTools
-mock_torch = MagicMock()
-sys.modules["torch"] = mock_torch
+# Attempt to import globally for the test class, but carefully
+try:
+    import torch
+except ImportError:
+    # Mock torch for this test file execution if not available
+    sys.modules["torch"] = MagicMock()
 
 from ImageTools.nodes import ImageProperties, ImageResizeCalculator
 
