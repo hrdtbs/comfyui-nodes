@@ -10,6 +10,8 @@ from .StringTools import NODE_CLASS_MAPPINGS as StringTools_MAPPINGS
 from .StringTools import NODE_DISPLAY_NAME_MAPPINGS as StringTools_DISPLAY_MAPPINGS
 from .Logic import NODE_CLASS_MAPPINGS as Logic_MAPPINGS
 from .Logic import NODE_DISPLAY_NAME_MAPPINGS as Logic_DISPLAY_MAPPINGS
+from .ImageTools import NODE_CLASS_MAPPINGS as ImageTools_MAPPINGS
+from .ImageTools import NODE_DISPLAY_NAME_MAPPINGS as ImageTools_DISPLAY_MAPPINGS
 
 NODE_CLASS_MAPPINGS = {
     **Math_MAPPINGS,
@@ -18,6 +20,7 @@ NODE_CLASS_MAPPINGS = {
     **AnatomyGuard_MAPPINGS,
     **StringTools_MAPPINGS,
     **Logic_MAPPINGS,
+    **ImageTools_MAPPINGS,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
@@ -27,6 +30,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     **AnatomyGuard_DISPLAY_MAPPINGS,
     **StringTools_DISPLAY_MAPPINGS,
     **Logic_DISPLAY_MAPPINGS,
+    **ImageTools_DISPLAY_MAPPINGS,
 }
 
 __all__ = ['NODE_CLASS_MAPPINGS', 'NODE_DISPLAY_NAME_MAPPINGS']
