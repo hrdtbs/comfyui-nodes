@@ -1,36 +1,36 @@
-from .Math import NODE_CLASS_MAPPINGS as Math_MAPPINGS
-from .Math import NODE_DISPLAY_NAME_MAPPINGS as Math_DISPLAY_MAPPINGS
-from .Wireless import NODE_CLASS_MAPPINGS as Wireless_MAPPINGS
-from .Wireless import NODE_DISPLAY_NAME_MAPPINGS as Wireless_DISPLAY_MAPPINGS
-from .ResolutionSelector import NODE_CLASS_MAPPINGS as ResolutionSelector_MAPPINGS
-from .ResolutionSelector import NODE_DISPLAY_NAME_MAPPINGS as ResolutionSelector_DISPLAY_MAPPINGS
-from .AnatomyGuard import NODE_CLASS_MAPPINGS as AnatomyGuard_MAPPINGS
-from .AnatomyGuard import NODE_DISPLAY_NAME_MAPPINGS as AnatomyGuard_DISPLAY_MAPPINGS
-from .StringTools import NODE_CLASS_MAPPINGS as StringTools_MAPPINGS
-from .StringTools import NODE_DISPLAY_NAME_MAPPINGS as StringTools_DISPLAY_MAPPINGS
-from .Logic import NODE_CLASS_MAPPINGS as Logic_MAPPINGS
-from .Logic import NODE_DISPLAY_NAME_MAPPINGS as Logic_DISPLAY_MAPPINGS
-from .ImageTools import NODE_CLASS_MAPPINGS as ImageTools_MAPPINGS
-from .ImageTools import NODE_DISPLAY_NAME_MAPPINGS as ImageTools_DISPLAY_MAPPINGS
+import importlib
+import os
+import sys
 
-NODE_CLASS_MAPPINGS = {
-    **Math_MAPPINGS,
-    **Wireless_MAPPINGS,
-    **ResolutionSelector_MAPPINGS,
-    **AnatomyGuard_MAPPINGS,
-    **StringTools_MAPPINGS,
-    **Logic_MAPPINGS,
-    **ImageTools_MAPPINGS,
-}
+NODE_CLASS_MAPPINGS = {}
+NODE_DISPLAY_NAME_MAPPINGS = {}
 
-NODE_DISPLAY_NAME_MAPPINGS = {
-    **Math_DISPLAY_MAPPINGS,
-    **Wireless_DISPLAY_MAPPINGS,
-    **ResolutionSelector_DISPLAY_MAPPINGS,
-    **AnatomyGuard_DISPLAY_MAPPINGS,
-    **StringTools_DISPLAY_MAPPINGS,
-    **Logic_DISPLAY_MAPPINGS,
-    **ImageTools_DISPLAY_MAPPINGS,
-}
+# List of folders to ignore
+IGNORE_FOLDERS = {'__pycache__', '.git', 'tests'}
+
+# Get current directory
+current_dir = os.path.dirname(__file__)
+
+# Iterate over subdirectories
+for item in os.listdir(current_dir):
+    item_path = os.path.join(current_dir, item)
+    if os.path.isdir(item_path) and item not in IGNORE_FOLDERS:
+        # check if it has __init__.py
+        if '__init__.py' in os.listdir(item_path):
+            try:
+                # Try relative import (for package usage)
+                module = importlib.import_module(f".{item}", package=__name__)
+            except ImportError:
+                 # Try absolute import (for local testing/script usage)
+                 try:
+                    module = importlib.import_module(item)
+                 except ImportError as e:
+                    print(f"Failed to load module {item}: {e}")
+                    continue
+
+            if hasattr(module, "NODE_CLASS_MAPPINGS"):
+                NODE_CLASS_MAPPINGS.update(module.NODE_CLASS_MAPPINGS)
+            if hasattr(module, "NODE_DISPLAY_NAME_MAPPINGS"):
+                NODE_DISPLAY_NAME_MAPPINGS.update(module.NODE_DISPLAY_NAME_MAPPINGS)
 
 __all__ = ['NODE_CLASS_MAPPINGS', 'NODE_DISPLAY_NAME_MAPPINGS']
