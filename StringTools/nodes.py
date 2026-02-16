@@ -126,3 +126,35 @@ class StringSplit:
         if not separator:
             return (text.split(),)
         return (text.split(separator),)
+
+
+class StringJoin:
+    """
+    Joins a list of strings with a separator.
+    Receives a list (batch) of strings and returns a single concatenated string.
+    """
+    @classmethod
+    def INPUT_TYPES(s) -> dict:
+        return {
+            "required": {
+                "strings": ("STRING", {"forceInput": True}),
+                "separator": ("STRING", {"default": "\\n", "multiline": False}),
+            }
+        }
+
+    INPUT_IS_LIST = True
+    RETURN_TYPES = ("STRING",)
+    RETURN_NAMES = ("string",)
+    FUNCTION = "join_strings"
+    CATEGORY = "h2nodes/StringTools"
+
+    def join_strings(self, strings: list[str], separator: list[str]) -> tuple[str]:
+        # Since INPUT_IS_LIST is True, 'separator' will be a list even if it's a single widget value.
+        # We take the first element if it's a list.
+        sep = separator[0] if isinstance(separator, list) and separator else "\n"
+
+        # Handle literal "\n" string as newline character if user types "\n" in widget
+        if sep == "\\n":
+            sep = "\n"
+
+        return (sep.join(strings),)

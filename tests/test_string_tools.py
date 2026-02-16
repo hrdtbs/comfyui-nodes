@@ -1,5 +1,5 @@
 import unittest
-from StringTools.nodes import StringConcat, StringReplace, StringSlice, StringRegexReplace, StringSplit
+from StringTools.nodes import StringConcat, StringReplace, StringSlice, StringRegexReplace, StringSplit, StringJoin
 
 class TestStringTools(unittest.TestCase):
     def test_string_concat(self):
@@ -72,6 +72,26 @@ class TestStringTools(unittest.TestCase):
         # Test backward compatibility (no split_mode passed, defaults to separator)
         # This simulates an old workflow execution
         self.assertEqual(node.split_string("A,B,C", ","), (["A", "B", "C"],))
+
+    def test_string_join(self):
+        node = StringJoin()
+
+        # Test basic join with default separator (simulated list input)
+        # In ComfyUI with INPUT_IS_LIST=True, arguments are passed as lists.
+        # strings input is a list of strings. separator is a list containing the widget value.
+        self.assertEqual(node.join_strings(["A", "B", "C"], ["\n"]), ("A\nB\nC",))
+
+        # Test join with comma
+        self.assertEqual(node.join_strings(["A", "B", "C"], [","]), ("A,B,C",))
+
+        # Test join with literal "\n" string handling
+        self.assertEqual(node.join_strings(["A", "B"], ["\\n"]), ("A\nB",))
+
+        # Test empty list
+        self.assertEqual(node.join_strings([], ["\n"]), ("",))
+
+        # Test single item
+        self.assertEqual(node.join_strings(["Single"], ["\n"]), ("Single",))
 
 if __name__ == '__main__':
     unittest.main()
