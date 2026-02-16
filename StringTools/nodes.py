@@ -101,8 +101,8 @@ class StringRegexReplace:
 
 class StringSplit:
     """
-    Splits a string by a separator. Returns a list of strings.
-    If separator is empty, splits by whitespace.
+    Splits a string. Can split by newline or by a separator.
+    Returns a list of strings.
     """
     @classmethod
     def INPUT_TYPES(s) -> dict:
@@ -110,6 +110,7 @@ class StringSplit:
             "required": {
                 "text": ("STRING", {"multiline": True, "default": ""}),
                 "separator": ("STRING", {"default": ","}),
+                "split_mode": (["newline", "separator"], {"default": "newline"}),
             }
         }
 
@@ -118,7 +119,10 @@ class StringSplit:
     FUNCTION = "split_string"
     CATEGORY = "h2nodes/StringTools"
 
-    def split_string(self, text: str, separator: str) -> tuple[list[str]]:
+    def split_string(self, text: str, separator: str, split_mode: str = "separator") -> tuple[list[str]]:
+        if split_mode == "newline":
+            return ([line for line in text.splitlines() if line],)
+
         if not separator:
             return (text.split(),)
         return (text.split(separator),)

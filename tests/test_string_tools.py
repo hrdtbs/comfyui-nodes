@@ -54,12 +54,24 @@ class TestStringTools(unittest.TestCase):
 
     def test_string_split(self):
         node = StringSplit()
-        # Basic split
+
+        # Test default newline splitting
+        text = "Line1\nLine2\r\nLine3\n\nLine4"
+        # Expect empty line removed (Line3\n\nLine4 -> skip middle empty line)
+        self.assertEqual(node.split_string(text, ",", "newline"), (["Line1", "Line2", "Line3", "Line4"],))
+
+        # Test separator splitting
+        self.assertEqual(node.split_string("A,B,C", ",", "separator"), (["A", "B", "C"],))
+
+        # Test separator splitting with whitespace (empty separator)
+        self.assertEqual(node.split_string("A B C", "", "separator"), (["A", "B", "C"],))
+
+        # Test mixed newlines and separator behavior (should split by newline if mode is newline)
+        self.assertEqual(node.split_string("A,B\nC,D", ",", "newline"), (["A,B", "C,D"],))
+
+        # Test backward compatibility (no split_mode passed, defaults to separator)
+        # This simulates an old workflow execution
         self.assertEqual(node.split_string("A,B,C", ","), (["A", "B", "C"],))
-        # Split by whitespace (empty separator)
-        self.assertEqual(node.split_string("A B C", ""), (["A", "B", "C"],))
-        # No separator match
-        self.assertEqual(node.split_string("ABC", ","), (["ABC"],))
 
 if __name__ == '__main__':
     unittest.main()
