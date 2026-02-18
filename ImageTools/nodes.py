@@ -74,3 +74,46 @@ class ImageResizeCalculator:
         new_height = int(round(height * scale_factor))
 
         return (new_width, new_height)
+
+class ImageScaleToTotalPixels:
+    """
+    A node that calculates new dimensions based on a target total pixel count (megapixels).
+    """
+    @classmethod
+    def INPUT_TYPES(s) -> dict:
+        return {
+            "required": {
+                "width": ("INT", {"default": 1024, "min": 1, "max": 16384}),
+                "height": ("INT", {"default": 1024, "min": 1, "max": 16384}),
+                "target_megapixels": ("FLOAT", {"default": 1.0, "min": 0.1, "max": 100.0, "step": 0.01}),
+            }
+        }
+
+    RETURN_TYPES = ("INT", "INT", "FLOAT")
+    RETURN_NAMES = ("width", "height", "scale_factor")
+    FUNCTION = "calculate_new_size"
+    CATEGORY = "h2nodes/ImageTools"
+
+    def calculate_new_size(self, width: int, height: int, target_megapixels: float) -> tuple[int, int, float]:
+        """
+        Calculates new width and height based on the target total pixel count.
+
+        Args:
+            width (int): Original width.
+            height (int): Original height.
+            target_megapixels (float): Target total pixels in millions (e.g. 1.0 for 1MP).
+
+        Returns:
+            tuple: (new_width, new_height, scale_factor)
+        """
+        current_pixels = width * height
+        if current_pixels == 0:
+            return (width, height, 1.0)
+
+        target_pixels = target_megapixels * 1_000_000
+        scale_factor = math.sqrt(target_pixels / current_pixels)
+
+        new_width = int(round(width * scale_factor))
+        new_height = int(round(height * scale_factor))
+
+        return (new_width, new_height, scale_factor)
