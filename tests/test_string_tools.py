@@ -1,5 +1,5 @@
 import unittest
-from StringTools.nodes import StringConcat, StringReplace, StringSlice, StringRegexReplace, StringSplit, StringJoin
+from StringTools.nodes import StringConcat, StringReplace, StringSlice, StringRegexReplace, StringSplit, StringJoin, StringCase
 
 class TestStringTools(unittest.TestCase):
     def test_string_concat(self):
@@ -92,6 +92,28 @@ class TestStringTools(unittest.TestCase):
 
         # Test single item
         self.assertEqual(node.join_strings(["Single"], ["\n"]), ("Single",))
+
+    def test_string_case(self):
+        node = StringCase()
+        text = "Hello World"
+
+        # Test upper
+        self.assertEqual(node.convert_case(text, "upper"), ("HELLO WORLD",))
+
+        # Test lower
+        self.assertEqual(node.convert_case(text, "lower"), ("hello world",))
+
+        # Test title
+        self.assertEqual(node.convert_case("hello world", "title"), ("Hello World",))
+
+        # Test capitalize
+        self.assertEqual(node.convert_case("hello world", "capitalize"), ("Hello world",))
+
+        # Test swapcase
+        self.assertEqual(node.convert_case("Hello World", "swapcase"), ("hELLO wORLD",))
+
+        # Test invalid case (should return original)
+        self.assertEqual(node.convert_case("Hello World", "unknown"), ("Hello World",))
 
 if __name__ == '__main__':
     unittest.main()

@@ -158,3 +158,34 @@ class StringJoin:
             sep = "\n"
 
         return (sep.join(strings),)
+
+class StringCase:
+    """
+    Converts a string to a specified case (upper, lower, title, capitalize, swapcase).
+    """
+    @classmethod
+    def INPUT_TYPES(s) -> dict:
+        return {
+            "required": {
+                "text": ("STRING", {"multiline": True, "default": ""}),
+                "case_method": (["upper", "lower", "title", "capitalize", "swapcase"], {"default": "upper"}),
+            }
+        }
+
+    RETURN_TYPES = ("STRING",)
+    RETURN_NAMES = ("result",)
+    FUNCTION = "convert_case"
+    CATEGORY = "h2nodes/StringTools"
+
+    def convert_case(self, text: str, case_method: str) -> tuple[str]:
+        if case_method == "upper":
+            return (text.upper(),)
+        if case_method == "lower":
+            return (text.lower(),)
+        if case_method == "title":
+            return (text.title(),)
+        if case_method == "capitalize":
+            return (text.capitalize(),)
+        if case_method == "swapcase":
+            return (text.swapcase(),)
+        return (text,)
