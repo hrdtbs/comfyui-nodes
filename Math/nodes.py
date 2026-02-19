@@ -1,3 +1,5 @@
+import math
+
 class MathAdd:
     """
     A simple node that adds two integers.
@@ -123,3 +125,54 @@ class MathModulus:
         if b == 0:
             return (0,)
         return (a % b,)
+
+class MathExpression:
+    """
+    A node that evaluates a mathematical expression using a, b, and c as variables.
+    """
+    @classmethod
+    def INPUT_TYPES(s) -> dict:
+        return {
+            "required": {
+                "expression": ("STRING", {"multiline": True, "default": "a + b"}),
+                "a": ("FLOAT", {"default": 0.0, "step": 0.01}),
+                "b": ("FLOAT", {"default": 0.0, "step": 0.01}),
+                "c": ("FLOAT", {"default": 0.0, "step": 0.01}),
+            }
+        }
+
+    RETURN_TYPES = ("INT", "FLOAT",)
+    RETURN_NAMES = ("result_int", "result_float",)
+    FUNCTION = "evaluate"
+    CATEGORY = "h2nodes/Math"
+
+    def evaluate(self, expression: str, a: float, b: float, c: float) -> tuple[int, float]:
+        # Create a safe environment with math functions
+        allowed_names = {k: v for k, v in math.__dict__.items() if not k.startswith("__")}
+        allowed_names.update({
+            "a": a,
+            "b": b,
+            "c": c,
+            "abs": abs,
+            "min": min,
+            "max": max,
+            "round": round,
+            "sum": sum,
+            "pow": pow,
+        })
+
+        try:
+            # We strictly limit builtins to avoid access to dangerous functions like __import__
+            result = eval(expression, {"__builtins__": {}}, allowed_names)
+
+            if isinstance(result, (int, float)):
+                return (int(result), float(result),)
+            elif isinstance(result, bool):
+                val = 1 if result else 0
+                return (val, float(val),)
+            else:
+                 # Try to cast whatever it is
+                return (int(result), float(result),)
+        except Exception as e:
+            print(f"[MathExpression] Error evaluating '{expression}': {e}")
+            return (0, 0.0,)
