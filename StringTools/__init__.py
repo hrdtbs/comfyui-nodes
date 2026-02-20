@@ -1,4 +1,4 @@
-from .nodes import StringConcat, StringReplace, StringSlice, StringRegexReplace, StringSplit, StringJoin
+from .nodes import StringConcat, StringReplace, StringSlice, StringRegexReplace, StringSplit, StringJoin, StringCase
 
 NODE_CLASS_MAPPINGS = {
     "StringConcat": StringConcat,
@@ -7,6 +7,7 @@ NODE_CLASS_MAPPINGS = {
     "StringRegexReplace": StringRegexReplace,
     "StringSplit": StringSplit,
     "StringJoin": StringJoin,
+    "StringCase": StringCase,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
@@ -16,6 +17,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "StringRegexReplace": "String Regex Replace",
     "StringSplit": "String Split",
     "StringJoin": "String Join",
+    "StringCase": "String Case",
 }
 
 __all__ = ['NODE_CLASS_MAPPINGS', 'NODE_DISPLAY_NAME_MAPPINGS']
