@@ -78,3 +78,32 @@ ComfyUI用のシンプルな数学演算ノードセットです。
 * 変数: `a`, `b`, `c`
 * 組み込み関数: `abs`, `min`, `max`, `round`, `sum`, `pow`
 * Mathモジュール関数: `sin`, `cos`, `tan`, `sqrt`, `pi`, `e`, `floor`, `ceil` など
+
+### MathClamp
+
+値を指定された最小値と最大値の間に制限（クランプ）するノードです。
+
+**入力 (Inputs)**
+* `value` (FLOAT): 制限対象の値。
+* `min` (FLOAT): 最小値。
+* `max` (FLOAT): 最大値。
+
+**出力 (Outputs)**
+* `result_int` (INT): クランプされた値（整数）。
+* `result_float` (FLOAT): クランプされた値（浮動小数点数）。
+
+### MathRemap
+
+値をある範囲から別の範囲へリニアマッピング（線形補間）するノードです。オプションでクランプも可能です。
+
+**入力 (Inputs)**
+* `value` (FLOAT): 変換対象の値。
+* `input_min` (FLOAT): 入力範囲の最小値。
+* `input_max` (FLOAT): 入力範囲の最大値。
+* `output_min` (FLOAT): 出力範囲の最小値。
+* `output_max` (FLOAT): 出力範囲の最大値。
+* `clamp` (BOOLEAN): 計算結果を出力範囲内に制限するかどうか。デフォルトはFalse。
+
+**出力 (Outputs)**
+* `result_int` (INT): マッピングされた値（整数）。
+* `result_float` (FLOAT): マッピングされた値（浮動小数点数）。
