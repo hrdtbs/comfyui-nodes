@@ -6,7 +6,7 @@ import math
 # Add repo root to path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from Math.nodes import MathAdd, MathSubtract, MathMultiply, MathDivide, MathModulus, MathExpression
+from Math.nodes import MathAdd, MathSubtract, MathMultiply, MathDivide, MathModulus, MathExpression, MathClamp, MathRemap
 
 class TestMath(unittest.TestCase):
     def test_add_basic(self):
@@ -135,6 +135,53 @@ class TestMath(unittest.TestCase):
         res_int, res_float = expr.evaluate("a < b", 5.0, 2.0, 0.0)
         self.assertEqual(res_int, 0)
         self.assertEqual(res_float, 0.0)
+
+    def test_clamp_basic(self):
+        clamper = MathClamp()
+        # value inside range
+        res_int, res_float = clamper.clamp(5.0, 0.0, 10.0)
+        self.assertEqual(res_int, 5)
+        self.assertEqual(res_float, 5.0)
+
+        # value < min
+        res_int, res_float = clamper.clamp(-5.0, 0.0, 10.0)
+        self.assertEqual(res_int, 0)
+        self.assertEqual(res_float, 0.0)
+
+        # value > max
+        res_int, res_float = clamper.clamp(15.0, 0.0, 10.0)
+        self.assertEqual(res_int, 10)
+        self.assertEqual(res_float, 10.0)
+
+    def test_remap_basic(self):
+        mapper = MathRemap()
+        # 0..10 -> 0..100. Value 5 -> 50.
+        res_int, res_float = mapper.remap(5.0, 0.0, 10.0, 0.0, 100.0, False)
+        self.assertEqual(res_int, 50)
+        self.assertEqual(res_float, 50.0)
+
+    def test_remap_inverse(self):
+        mapper = MathRemap()
+        # 0..1 -> 1..0 (invert). Value 0.25 -> 0.75.
+        res_int, res_float = mapper.remap(0.25, 0.0, 1.0, 1.0, 0.0, False)
+        self.assertEqual(res_int, 0) # int(0.75) = 0
+        self.assertEqual(res_float, 0.75)
+
+    def test_remap_clamp(self):
+        mapper = MathRemap()
+        # 0..10 -> 0..100. Value 15 -> 150 (unclamped).
+        res_int, res_float = mapper.remap(15.0, 0.0, 10.0, 0.0, 100.0, False)
+        self.assertEqual(res_float, 150.0)
+
+        # Clamped: Should be 100.
+        res_int, res_float = mapper.remap(15.0, 0.0, 10.0, 0.0, 100.0, True)
+        self.assertEqual(res_float, 100.0)
+
+    def test_remap_zero_division_protection(self):
+        mapper = MathRemap()
+        # input range 0..0
+        res_int, res_float = mapper.remap(5.0, 0.0, 0.0, 10.0, 20.0, False)
+        self.assertEqual(res_float, 10.0) # Returns output_min
 
 if __name__ == '__main__':
     unittest.main()

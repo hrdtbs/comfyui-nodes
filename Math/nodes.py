@@ -176,3 +176,71 @@ class MathExpression:
         except Exception as e:
             print(f"[MathExpression] Error evaluating '{expression}': {e}")
             return (0, 0.0,)
+
+class MathClamp:
+    """
+    A node that clamps a value between a minimum and maximum.
+    """
+    @classmethod
+    def INPUT_TYPES(s) -> dict:
+        return {
+            "required": {
+                "value": ("FLOAT", {"default": 0.0, "step": 0.01}),
+                "min": ("FLOAT", {"default": 0.0, "step": 0.01}),
+                "max": ("FLOAT", {"default": 1.0, "step": 0.01}),
+            }
+        }
+
+    RETURN_TYPES = ("INT", "FLOAT",)
+    RETURN_NAMES = ("result_int", "result_float",)
+    FUNCTION = "clamp"
+    CATEGORY = "h2nodes/Math"
+
+    def clamp(self, value: float, min: float, max: float) -> tuple[int, float]:
+        # Using simple if statements to avoid shadowing builtins issues
+        res = value
+        if res < min:
+            res = min
+        if res > max:
+            res = max
+
+        return (int(res), float(res))
+
+class MathRemap:
+    """
+    A node that remaps a value from one range to another.
+    """
+    @classmethod
+    def INPUT_TYPES(s) -> dict:
+        return {
+            "required": {
+                "value": ("FLOAT", {"default": 0.0, "step": 0.01}),
+                "input_min": ("FLOAT", {"default": 0.0, "step": 0.01}),
+                "input_max": ("FLOAT", {"default": 1.0, "step": 0.01}),
+                "output_min": ("FLOAT", {"default": 0.0, "step": 0.01}),
+                "output_max": ("FLOAT", {"default": 1.0, "step": 0.01}),
+                "clamp": ("BOOLEAN", {"default": False}),
+            }
+        }
+
+    RETURN_TYPES = ("INT", "FLOAT",)
+    RETURN_NAMES = ("result_int", "result_float",)
+    FUNCTION = "remap"
+    CATEGORY = "h2nodes/Math"
+
+    def remap(self, value: float, input_min: float, input_max: float, output_min: float, output_max: float, clamp: bool) -> tuple[int, float]:
+        if input_min == input_max:
+             return (int(output_min), float(output_min))
+
+        normalized = (value - input_min) / (input_max - input_min)
+        mapped = output_min + (normalized * (output_max - output_min))
+
+        if clamp:
+            if output_min < output_max:
+                if mapped < output_min: mapped = output_min
+                if mapped > output_max: mapped = output_max
+            else:
+                if mapped < output_max: mapped = output_max
+                if mapped > output_min: mapped = output_min
+
+        return (int(mapped), float(mapped))
